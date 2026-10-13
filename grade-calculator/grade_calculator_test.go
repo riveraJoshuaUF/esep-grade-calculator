@@ -49,3 +49,46 @@ func TestGetGradeF(t *testing.T) {
 		t.Errorf("Expected GetGrade to return '%s'; got '%s' instead", expected_value, actual_value)
 	}
 }
+
+func TestGetRemainingLetterGrades(t *testing.T) {
+	cases := []struct {
+		score    int
+		expected string
+	}{
+		{70, "C"},
+		{60, "D"},
+		{59, "F"},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.expected, func(t *testing.T) {
+			calculator := NewGradeCalculator()
+			calculator.AddGrade("assignment", tc.score, Assignment)
+			calculator.AddGrade("exam", tc.score, Exam)
+			calculator.AddGrade("essay", tc.score, Essay)
+
+			actual := calculator.GetFinalGrade()
+			if actual != tc.expected {
+				t.Errorf("Expected %s; got %s", tc.expected, actual)
+			}
+		})
+	}
+}
+
+func TestGradeTypeString(t *testing.T) {
+	cases := []struct {
+		gradeType GradeType
+		expected  string
+	}{
+		{Assignment, "assignment"},
+		{Exam, "exam"},
+		{Essay, "essay"},
+	}
+
+	for _, tc := range cases {
+		actual := tc.gradeType.String()
+		if actual != tc.expected {
+			t.Errorf("Expected %s; got %s", tc.expected, actual)
+		}
+	}
+}
